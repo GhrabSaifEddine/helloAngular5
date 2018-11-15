@@ -1,0 +1,69 @@
+<mat-card>
+  <mat-toolbar>
+    Liste des langages de développement disponibles
+    <span matBadge="{{dataSource.data.length}}" matBadgeOverlap="false" matBadgeColor="warn"></span>
+  </mat-toolbar>
+
+  <br>
+
+  <table>
+    <td>
+      <button mat-raised-button (click)="addLangage()">Add new Langage</button>
+    </td>
+    <td>
+      <button class="mat-raised-button mat-primary" (click)="saveLangages()">Valider</button>
+    </td>
+  </table>
+
+  <br>
+  
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- idLanguage Column -->
+    <ng-container matColumnDef="idLanguage">
+      <th mat-header-cell *matHeaderCellDef> No.</th>
+      <td mat-cell *matCellDef="let element"> {{element.idLanguage}}</td>
+    </ng-container>
+
+    <!-- libelleLanguage Column -->
+    <ng-container matColumnDef="libelleLanguage">
+      <th mat-header-cell *matHeaderCellDef> Name</th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="element.libelleLanguage != '' && element.idLanguage != null ;then notEdited else edited"></div>
+        <ng-template #notEdited>
+          {{element.libelleLanguage}}
+        </ng-template>
+        <ng-template #edited>
+          <mat-cell>
+            <mat-form-field floatLabel="never">
+              <input matInput placeholder="Name" [value]="element.libelleLanguage"
+                     [(ngModel)]="element.libelleLanguage">
+            </mat-form-field>
+          </mat-cell>
+        </ng-template>
+      </td>
+      <!--<td mat-cell *matCellDef="let element"> {{element.libelleLanguage}} </td>-->
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+        (click)="selection.toggle(row)">
+    </tr>
+  </table>
+</mat-card>
